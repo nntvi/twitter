@@ -1,12 +1,11 @@
 import { Request, Response } from 'express'
-import User from '~/models/schemas/User.schema'
-import databaseService from '~/services/database.services'
+import { ParamsDictionary } from 'express-serve-static-core'
+import { RegisterReqBody } from '~/models/requests/User.requests'
 import userService from '~/services/users.services'
 
-export const registerController = async (req: Request, res: Response) => {
-  const { email, password } = req.body
+export const registerController = async (req: Request<ParamsDictionary, any, RegisterReqBody>, res: Response) => {
   try {
-    const result = await userService.register({ email, password })
+    const result = await userService.register(req.body)
     return res.status(200).json({
       message: 'Register success',
       result

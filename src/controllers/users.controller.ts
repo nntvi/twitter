@@ -11,5 +11,3 @@ export const loginController = (req: Request, res: Response) => {
     message: 'Login failed'
   })
 }
-
-// Context from Code Snippet nodemon.json:{

@@ -1,10 +1,6 @@
 import { ObjectId } from 'mongodb'
+import { UserVerifyStatus } from '~/constants/enums'
 
-enum UserVerifyStatus {
-  Unverified, // chưa xác thưc
-  Verified, // đã xác thưc
-  Banned // bị khoá
-}
 interface UserType {
   _id?: ObjectId
   name?: string
