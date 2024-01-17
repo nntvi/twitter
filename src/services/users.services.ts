@@ -4,7 +4,7 @@ import { RegisterReqBody } from '~/models/requests/User.requests'
 import { hashPassword } from '~/utils/crypto'
 import signToken from '~/utils/jwt'
 import { TokenType } from '~/constants/enums'
-
+// controller gọi đến service
 class UserService {
   private signAccessToken(user_id: string) {
     return signToken({

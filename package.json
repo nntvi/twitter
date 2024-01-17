@@ -33,9 +33,11 @@
     "tsconfig-paths": "^4.2.0"
   },
   "dependencies": {
+    "@types/lodash": "^4.14.200",
     "dotenv": "^16.3.1",
     "express-validator": "^7.0.1",
     "jsonwebtoken": "^9.0.2",
+    "lodash": "^4.17.21",
     "mongodb": "^6.1.0"
   }
 }

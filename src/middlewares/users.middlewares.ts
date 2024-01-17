@@ -1,5 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
 import { checkSchema } from 'express-validator'
+import httpStatus from '~/constants/httpStatus'
+import { ErrorWithStatus } from '~/models/Error'
 import userService from '~/services/users.services'
 import { validate } from '~/utils/validation'
 export const loginValidator = (req: Request, res: Response, next: NextFunction) => {
@@ -14,6 +16,7 @@ export const registerValidator = validate(
   checkSchema({
     name: {
       notEmpty: true,
+      isString: true,
       isLength: {
         options: { min: 3, max: 50 },
         errorMessage: 'Name must be at least 3 characters'
@@ -29,7 +32,7 @@ export const registerValidator = validate(
         options: async (value) => {
           const user = await userService.checkEmailExist(value)
           if (user) {
-            throw new Error('Email existed')
+            throw new Error('Email already exists')
           }
           return true
         }
@@ -37,6 +40,7 @@ export const registerValidator = validate(
     },
     password: {
       notEmpty: true,
+      isString: true,
       isLength: {
         options: { min: 6, max: 50 }
       },
