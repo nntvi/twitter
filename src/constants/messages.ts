@@ -21,5 +21,8 @@ export const userMessageError = {
     'Confirm password must be from 6 to 50 characters, at least one uppercase letter, one lowercase letter, one number and one special character',
   CONFIRM_PASSWORD_MUST_MATCH: 'Confirm password must match with password',
 
-  DATE_OF_BIRTH_IS_ISO8601: 'Date of birth must be in ISO 8601 format'
+  DATE_OF_BIRTH_IS_ISO8601: 'Date of birth must be in ISO 8601 format',
+
+  LOGIN_SUCCESS: 'Login success',
+  REGISTER_SUCCESS: 'Register success'
 } as const

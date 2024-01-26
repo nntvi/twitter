@@ -22,6 +22,14 @@ class UserService {
       }
     })
   }
+  private signTwoFactorToken(user_id: string) {
+    // giờ tạo 2 cái token thì để tối ưu => nên xài promise all
+    return Promise.all([this.signAccessToken(user_id), this.signRefreshToken(user_id)])
+  }
+  async checkEmailExist(email: string) {
+    const result = await databaseService.users.findOne({ email })
+    return Boolean(result)
+  }
 
   async register(payload: RegisterReqBody) {
     const result = await databaseService.users.insertOne(
@@ -32,16 +40,13 @@ class UserService {
       })
     )
     const user_id = result.insertedId.toString()
-    // giờ tạo 2 cái token thì để tối ưu => nên xài promise all
-    const [accessToken, refreshToken] = await Promise.all([
-      this.signAccessToken(user_id),
-      this.signRefreshToken(user_id)
-    ])
+    const [accessToken, refreshToken] = await this.signTwoFactorToken(user_id)
     return { accessToken, refreshToken }
   }
-  async checkEmailExist(email: string) {
-    const result = await databaseService.users.findOne({ email })
-    return Boolean(result)
+
+  async login(user_id: string) {
+    const [accessToken, refreshToken] = await this.signTwoFactorToken(user_id)
+    return { accessToken, refreshToken }
   }
 }
 

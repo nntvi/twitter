@@ -1,15 +1,46 @@
-import { NextFunction, Request, Response } from 'express'
 import { checkSchema } from 'express-validator'
 import { userMessageError } from '~/constants/messages'
+import databaseService from '~/services/database.services'
 import userService from '~/services/users.services'
 import { validate } from '~/utils/validation'
-export const loginValidator = (req: Request, res: Response, next: NextFunction) => {
-  const { email, password } = req.body
-  if (!email || !password) {
-    return res.status(400).json({ message: 'All fields must be filled' })
-  }
-  next()
-}
+export const loginValidator = validate(
+  checkSchema({
+    email: {
+      isEmail: {
+        errorMessage: userMessageError.EMAIL_INVALID
+      },
+      trim: true,
+      custom: {
+        options: async (value, { req }) => {
+          const user = await databaseService.users.findOne({ email: value })
+          // nếu tìm ko thấy báo lỗi
+          if (user === null) {
+            throw new Error(userMessageError.USER_NOT_FOUND)
+          }
+          // còn không truyền ngược lại qua controller thông qua req
+          req.user = user
+          return true
+        }
+      }
+    },
+    password: {
+      notEmpty: {
+        errorMessage: userMessageError.PASSWORD_REQUIRED
+      },
+      isString: {
+        errorMessage: userMessageError.PASSWORD_STRING
+      },
+      isLength: {
+        options: { min: 6, max: 50 },
+        errorMessage: userMessageError.PASSWORD_LENGTH
+      },
+      isStrongPassword: {
+        errorMessage: userMessageError.PASSWORD_MUST_BE_STRONG,
+        options: { minLength: 6, minLowercase: 1, minUppercase: 1, minNumbers: 1, minSymbols: 1 }
+      }
+    }
+  })
+)
 
 export const registerValidator = validate(
   checkSchema({
@@ -27,9 +58,6 @@ export const registerValidator = validate(
       trim: true
     },
     email: {
-      notEmpty: {
-        errorMessage: userMessageError.EMAIL_REQUIRED
-      },
       isEmail: {
         errorMessage: userMessageError.EMAIL_INVALID
       },
