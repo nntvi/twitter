@@ -4,6 +4,10 @@ import { RegisterReqBody } from '~/models/requests/User.requests'
 import { hashPassword } from '~/utils/crypto'
 import signToken from '~/utils/jwt'
 import { TokenType } from '~/constants/enums'
+import RefreshToken from '~/models/schemas/RefreshToken.schema'
+import { ObjectId } from 'mongodb'
+import { config } from 'dotenv'
+config() // thêm zô, có xài process thì nhớ khai báo này
 // controller gọi đến service
 class UserService {
   private signAccessToken(user_id: string) {
@@ -41,11 +45,17 @@ class UserService {
     )
     const user_id = result.insertedId.toString()
     const [accessToken, refreshToken] = await this.signTwoFactorToken(user_id)
+    await databaseService.refreshTokens.insertOne(
+      new RefreshToken({ token: refreshToken, user_id: new ObjectId(user_id) })
+    )
     return { accessToken, refreshToken }
   }
 
   async login(user_id: string) {
     const [accessToken, refreshToken] = await this.signTwoFactorToken(user_id)
+    await databaseService.refreshTokens.insertOne(
+      new RefreshToken({ token: refreshToken, user_id: new ObjectId(user_id) })
+    )
     return { accessToken, refreshToken }
   }
 }

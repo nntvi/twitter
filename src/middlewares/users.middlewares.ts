@@ -2,6 +2,7 @@ import { checkSchema } from 'express-validator'
 import { userMessageError } from '~/constants/messages'
 import databaseService from '~/services/database.services'
 import userService from '~/services/users.services'
+import { hashPassword } from '~/utils/crypto'
 import { validate } from '~/utils/validation'
 export const loginValidator = validate(
   checkSchema({
@@ -12,10 +13,10 @@ export const loginValidator = validate(
       trim: true,
       custom: {
         options: async (value, { req }) => {
-          const user = await databaseService.users.findOne({ email: value })
+          const user = await databaseService.users.findOne({ email: value, password: hashPassword(req.body.password) })
           // nếu tìm ko thấy báo lỗi
           if (user === null) {
-            throw new Error(userMessageError.USER_NOT_FOUND)
+            throw new Error(userMessageError.EMAIL_OR_PASSWORD_INCORRECT)
           }
           // còn không truyền ngược lại qua controller thông qua req
           req.user = user

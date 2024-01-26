@@ -9,6 +9,7 @@ export const userMessageError = {
   EMAIL_ALREADY_EXIST: 'Email already exists',
   EMAIL_REQUIRED: 'Email is required',
   EMAIL_INVALID: 'Email is not valid',
+  EMAIL_OR_PASSWORD_INCORRECT: 'Email or password is incorrect',
 
   PASSWORD_REQUIRED: 'Password is required',
   PASSWORD_LENGTH: 'Password must be at least 6 characters',
