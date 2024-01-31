@@ -1,7 +1,8 @@
 import { config } from 'dotenv'
 import jwt, { SignOptions } from 'jsonwebtoken'
+import { TokenPayload } from '~/models/requests/User.requests'
 config()
-const signToken = ({
+export const signToken = ({
   payload,
   privateKey = process.env.JWT_SECRET as string,
   options = {
@@ -21,4 +22,21 @@ const signToken = ({
     })
   })
 }
-export default signToken
+
+export const verifyToken = ({
+  token,
+  secretOnPublicKey = process.env.JWT_SECRET as string
+}: {
+  token: string
+  secretOnPublicKey?: string
+}) => {
+  // vì token của mình luôn luôn là obj payload nên sử dụng kiểu jwt.JwtPayload
+  return new Promise<TokenPayload>((resolve, reject) => {
+    jwt.verify(token, secretOnPublicKey, (err, decoded) => {
+      if (err) {
+        throw reject(err)
+      }
+      resolve(decoded as TokenPayload)
+    })
+  })
+}

@@ -2,11 +2,12 @@ import User from '~/models/schemas/User.schema'
 import databaseService from './database.services'
 import { RegisterReqBody } from '~/models/requests/User.requests'
 import { hashPassword } from '~/utils/crypto'
-import signToken from '~/utils/jwt'
 import { TokenType } from '~/constants/enums'
 import RefreshToken from '~/models/schemas/RefreshToken.schema'
 import { ObjectId } from 'mongodb'
 import { config } from 'dotenv'
+import { signToken } from '~/utils/jwt'
+import { userMessages } from '~/constants/messages'
 config() // thêm zô, có xài process thì nhớ khai báo này
 // controller gọi đến service
 class UserService {
@@ -34,7 +35,10 @@ class UserService {
     const result = await databaseService.users.findOne({ email })
     return Boolean(result)
   }
-
+  async checkRefreshTokenExist(refresh_token: string) {
+    const result = await databaseService.refreshTokens.findOne({ token: refresh_token })
+    return Boolean(result)
+  }
   async register(payload: RegisterReqBody) {
     const result = await databaseService.users.insertOne(
       new User({
@@ -57,6 +61,13 @@ class UserService {
       new RefreshToken({ token: refreshToken, user_id: new ObjectId(user_id) })
     )
     return { accessToken, refreshToken }
+  }
+
+  async logout(refresh_token: string) {
+    await databaseService.refreshTokens.deleteOne({ token: refresh_token })
+    return {
+      message: userMessages.LOGOUT_SUCCESSFULLY
+    }
   }
 }
 

@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
 import { ParamsDictionary } from 'express-serve-static-core'
-import { userMessageError } from '~/constants/messages'
+import { userMessages } from '~/constants/messages'
 import { RegisterReqBody } from '~/models/requests/User.requests'
 import userService from '~/services/users.services'
 
@@ -11,7 +11,7 @@ export const registerController = async (
 ) => {
   const result = await userService.register(req.body)
   return res.status(200).json({
-    message: userMessageError.REGISTER_SUCCESS,
+    message: userMessages.REGISTER_SUCCESS,
     result
   })
 }
