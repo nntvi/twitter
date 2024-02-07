@@ -17,3 +17,6 @@ export interface TokenPayload extends JwtPayload {
 export interface LogoutBody {
   refresh_token: string
 }
+export interface EmailVerifyTokenBody {
+  email_verify_token: string
+}
