@@ -92,14 +92,20 @@ class UserService {
   }
 
   async verifyEmail(user_id: string) {
+    // Tạo giá trị cập nhật => new Date()
+    // Cập nhật giá trị => làm kiểu $currentDate -> mongoDB đưa ngày vào,
+    // còn ở trên là mình đưa ngày vào cho mongoDB lưu
     const [token] = await Promise.all([
       this.signTwoFactorToken(user_id),
-      databaseService.users.updateOne(
-        { _id: new ObjectId(user_id) },
+      databaseService.users.updateOne({ _id: new ObjectId(user_id) }, [
         {
-          $set: { email_verified_token: '', updated_at: new Date(), verify: UserVerifyStatus.Verified }
+          $set: {
+            email_verified_token: '',
+            updated_at: '$$NOW',
+            verify: UserVerifyStatus.Verified
+          }
         }
-      )
+      ])
     ])
     const [accessToken, refreshToken] = token
     return {
