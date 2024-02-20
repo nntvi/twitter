@@ -1,5 +1,6 @@
 import { JwtPayload } from 'jsonwebtoken'
 import { TokenType } from '~/constants/enums'
+import User from '../schemas/User.schema'
 
 export interface LoginReqBody {
   email: string
@@ -23,4 +24,8 @@ export interface LogoutBody {
 }
 export interface EmailVerifyTokenBody {
   email_verify_token: string
+}
+
+export interface ForgotPasswordTokenBody {
+  user: User
 }

@@ -38,6 +38,15 @@ class UserService {
       }
     })
   }
+  private signForgotPasswordToken(user_id: string) {
+    return signToken({
+      payload: { user_id, token_type: TokenType.ForgotPasswordToken },
+      privateKey: process.env.JWT_SECRET_FORGOT_PASSWORD_TOKEN as string,
+      options: {
+        expiresIn: process.env.FORGOT_PASSWORD_TOKEN_EXPIRES_IN
+      }
+    })
+  }
   private signTwoFactorToken(user_id: string) {
     // giờ tạo 2 cái token thì để tối ưu => nên xài promise all
     return Promise.all([this.signAccessToken(user_id), this.signRefreshToken(user_id)])
@@ -45,6 +54,10 @@ class UserService {
 
   findUserById = async (user_id: string) => {
     const result = await databaseService.users.findOne({ _id: new ObjectId(user_id) })
+    return result
+  }
+  findUserByEmail = async (email: string) => {
+    const result = await databaseService.users.findOne({ email: email })
     return result
   }
   async checkEmailExist(email: string) {
@@ -131,6 +144,28 @@ class UserService {
 
     return {
       message: userMessages.RESEND_EMAIL_VERIFIED_SUCCESSFULLY
+    }
+  }
+
+  async forgotPassword(user_id: string) {
+    const forgot_password_token = await this.signForgotPasswordToken(user_id)
+    await databaseService.users.updateOne(
+      { _id: new ObjectId(user_id) },
+      {
+        $set: {
+          forgot_password_token
+        },
+        $currentDate: {
+          updated_at: true
+        }
+      }
+    )
+    // sau khi cập nhật xong ta tiến hành gửi mail, kèm link
+    // có dạng sau: https://twitter.com/forgot-password?token=[forgot_password_token]
+    console.log('🚀 ~ UserService ~ forgotPassword ~ forgot_password_token:', forgot_password_token)
+
+    return {
+      message: userMessages.CHECK_EMAIL_TO_RESET_PASSWORD_SUCCESSFULLY
     }
   }
 }

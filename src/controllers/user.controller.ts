@@ -6,6 +6,7 @@ import httpStatus from '~/constants/httpStatus'
 import { userMessages } from '~/constants/messages'
 import {
   EmailVerifyTokenBody,
+  ForgotPasswordTokenBody,
   LoginReqBody,
   LogoutBody,
   RegisterReqBody,
@@ -87,4 +88,14 @@ export const resendVerifyEmailController = async (req: Request, res: Response, n
 
   const result = await userService.resendVerifyEmail(user_id)
   return res.json(result) // vì return này chỉ là 1 obj có duy nhất 1 key là message
+}
+
+export const forgotPasswordController = async (
+  req: Request<ParamsDictionary, any, ForgotPasswordTokenBody>,
+  res: Response,
+  next: NextFunction
+) => {
+  const { _id } = req.user as User
+  const result = await userService.forgotPassword((_id as ObjectId).toString())
+  return res.json(result)
 }
