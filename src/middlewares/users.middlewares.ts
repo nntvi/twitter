@@ -1,5 +1,5 @@
 import { Request } from 'express'
-import { checkSchema } from 'express-validator'
+import { check, checkSchema } from 'express-validator'
 import { JsonWebTokenError } from 'jsonwebtoken'
 import { capitalize } from 'lodash'
 import httpStatus from '~/constants/httpStatus'
@@ -245,6 +245,7 @@ export const emailVerifyTokenValidator = validate(
     ['body']
   )
 )
+
 export const forgotPasswordValidator = validate(
   checkSchema(
     {
@@ -260,6 +261,57 @@ export const forgotPasswordValidator = validate(
               throw new Error(userMessages.USER_NOT_FOUND)
             }
             req.user = user
+            return true
+          }
+        }
+      }
+    },
+    ['body']
+  )
+)
+
+export const verifyForgotPasswordTokenValidator = validate(
+  checkSchema(
+    {
+      forgot_password_token: {
+        trim: true,
+        custom: {
+          options: async (value: string, { req }) => {
+            if (!value) {
+              throw new ErrorWithStatus({
+                message: userMessages.FORGOT_PASSWORD_TOKEN_REQUIRED,
+                status: httpStatus.UNAUTHORIZED
+              })
+            }
+            try {
+              const decoded_forgot_password_token = await verifyToken({
+                token: value,
+                secretOnPublicKey: process.env.JWT_SECRET_FORGOT_PASSWORD_TOKEN as string
+              })
+              const { user_id } = decoded_forgot_password_token
+              const user = await userService.findUserById(user_id)
+              if (!user) {
+                throw new ErrorWithStatus({
+                  message: userMessages.USER_NOT_FOUND,
+                  status: httpStatus.UNAUTHORIZED
+                })
+              } else {
+                if (user.forgot_password_token !== value) {
+                  throw new ErrorWithStatus({
+                    message: userMessages.FORGOT_PASSWORD_TOKEN_INVALID,
+                    status: httpStatus.UNAUTHORIZED
+                  })
+                }
+              }
+            } catch (error) {
+              if (error instanceof JsonWebTokenError) {
+                throw new ErrorWithStatus({
+                  message: capitalize(error.message),
+                  status: httpStatus.UNAUTHORIZED
+                })
+              }
+              throw error
+            }
             return true
           }
         }
