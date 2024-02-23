@@ -119,3 +119,17 @@ export const resetPasswordController = async (
   const result = await userService.resetPassword(user_id, password)
   return res.json(result)
 }
+
+export const getMeController = async (req: Request, res: Response, next: NextFunction) => {
+  const { user_id } = req.decode_authorization as TokenPayload
+  const user = await userService.findUserById(user_id)
+  if (!user) {
+    return res.status(httpStatus.NOT_FOUND).json({
+      message: userMessages.USER_NOT_FOUND
+    })
+  }
+  return res.json({
+    message: userMessages.GET_ME_SUCCESSFULLY,
+    result: user
+  })
+}

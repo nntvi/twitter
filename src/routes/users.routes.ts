@@ -18,7 +18,8 @@ import {
   resendVerifyEmailController,
   forgotPasswordController,
   verifyForgotPasswordController,
-  resetPasswordController
+  resetPasswordController,
+  getMeController
 } from '~/controllers/user.controller'
 const usersRouter = Router()
 
@@ -77,5 +78,12 @@ usersRouter.post(
  * Body: { new_password: string, confirm_new_password: string, forgot_password_token: string }
  */
 usersRouter.post('/reset-password', resetPasswordValidator, wrapRequestHandler(resetPasswordController))
+/**
+ * Description: get profile
+ * Path: /me
+ * Method: GET
+ * Headers: { Authorization: Bearer <access_token> }
+ */
+usersRouter.get('/me', accessTokenValidator, wrapRequestHandler(getMeController))
 
 export default usersRouter
