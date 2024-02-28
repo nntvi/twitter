@@ -48,5 +48,15 @@ export const userMessages = {
 
   GET_ME_SUCCESSFULLY: 'Get me successfully',
   USER_NOT_VERIFIED: 'User not verified',
-  UPDATE_ME_SUCCESSFULLY: 'Update me successfully'
+  UPDATE_ME_SUCCESSFULLY: 'Update me successfully',
+  BIO_IS_STRING: 'Bio must be a string',
+  BIO_LENGTH: 'Bio must be  from 3 to 200 characters',
+  LOCATION_IS_STRING: 'Location must be a string',
+  LOCATION_LENGTH: 'Location must be  from 3 to 200 characters',
+  WEBSITE_IS_STRING: 'Website must be a string',
+  WEBSITE_LENGTH: 'Website must be  from 3 to 50 characters',
+  USERNAME_IS_STRING: 'Username must be a string',
+  USERNAME_LENGTH: 'Username must be  from 3 to 50 characters',
+  IMAGE_IS_STRING: 'Image must be a string',
+  IMAGE_LENGTH: 'Image must be  from 3 to 200 characters'
 } as const

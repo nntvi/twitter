@@ -92,6 +92,43 @@ const forgotPasswordToken: ParamSchema = {
     }
   }
 }
+
+const nameSchema: ParamSchema = {
+  notEmpty: {
+    errorMessage: userMessages.NAME_REQUIRED
+  },
+  isString: {
+    errorMessage: userMessages.NAME_IS_STRING
+  },
+  isLength: {
+    options: { min: 3, max: 50 },
+    errorMessage: userMessages.NAME_LENGTH
+  },
+  trim: true
+}
+
+const dateOfBirthSchema: ParamSchema = {
+  isISO8601: {
+    // 1 chuẩn quốc tế về ngày tháng năm
+    options: {
+      strict: true, // phải tuân theo ISO 8601 chặt chẽ, ko chấp nhận các biến thể ko chính thống của định dạng ngày tháng năm
+      strictSeparator: true // các ký tự ngăn cách trong ngày tháng năm (như dấu -, /) phải đúng quy định
+    },
+    errorMessage: userMessages.DATE_OF_BIRTH_IS_ISO8601
+  }
+}
+
+const imageSchema: ParamSchema = {
+  optional: true,
+  isString: {
+    errorMessage: userMessages.IMAGE_IS_STRING
+  },
+  trim: true,
+  isLength: {
+    options: { min: 3, max: 200 },
+    errorMessage: userMessages.IMAGE_LENGTH
+  }
+}
 export const loginValidator = validate(
   checkSchema(
     {
@@ -140,19 +177,7 @@ export const loginValidator = validate(
 export const registerValidator = validate(
   checkSchema(
     {
-      name: {
-        notEmpty: {
-          errorMessage: userMessages.NAME_REQUIRED
-        },
-        isString: {
-          errorMessage: userMessages.NAME_IS_STRING
-        },
-        isLength: {
-          options: { min: 3, max: 50 },
-          errorMessage: userMessages.NAME_LENGTH
-        },
-        trim: true
-      },
+      name: nameSchema,
       email: {
         isEmail: {
           errorMessage: userMessages.EMAIL_INVALID
@@ -170,16 +195,7 @@ export const registerValidator = validate(
       },
       password: passwordSchema,
       confirm_password: confirmPasswordSchema,
-      date_of_birth: {
-        isISO8601: {
-          // 1 chuẩn quốc tế về ngày tháng năm
-          options: {
-            strict: true, // phải tuân theo ISO 8601 chặt chẽ, ko chấp nhận các biến thể ko chính thống của định dạng ngày tháng năm
-            strictSeparator: true // các ký tự ngăn cách trong ngày tháng năm (như dấu -, /) phải đúng quy định
-          },
-          errorMessage: userMessages.DATE_OF_BIRTH_IS_ISO8601
-        }
-      }
+      date_of_birth: dateOfBirthSchema
     },
     ['body']
   )
@@ -350,3 +366,63 @@ export const verifiedUserValidator: RequestHandler = (req: Request, res, next) =
   }
   next()
 }
+
+export const updateMeValidator = validate(
+  checkSchema(
+    {
+      name: {
+        ...nameSchema,
+        optional: true,
+        notEmpty: undefined
+      },
+      date_of_birth: { ...dateOfBirthSchema, optional: true },
+      bio: {
+        optional: true,
+        isString: {
+          errorMessage: userMessages.BIO_IS_STRING
+        },
+        trim: true,
+        isLength: {
+          options: { min: 3, max: 200 },
+          errorMessage: userMessages.BIO_LENGTH
+        }
+      },
+      location: {
+        optional: true,
+        isString: {
+          errorMessage: userMessages.LOCATION_IS_STRING
+        },
+        trim: true,
+        isLength: {
+          options: { min: 3, max: 200 },
+          errorMessage: userMessages.LOCATION_LENGTH
+        }
+      },
+      website: {
+        optional: true,
+        isString: {
+          errorMessage: userMessages.WEBSITE_IS_STRING
+        },
+        trim: true,
+        isLength: {
+          options: { min: 3, max: 50 },
+          errorMessage: userMessages.WEBSITE_LENGTH
+        }
+      },
+      username: {
+        optional: true,
+        isString: {
+          errorMessage: userMessages.USERNAME_IS_STRING
+        },
+        trim: true,
+        isLength: {
+          options: { min: 3, max: 50 },
+          errorMessage: userMessages.USERNAME_LENGTH
+        }
+      },
+      avatar: imageSchema,
+      cover_photo: imageSchema
+    },
+    ['body']
+  )
+)

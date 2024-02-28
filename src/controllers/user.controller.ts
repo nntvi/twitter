@@ -12,6 +12,7 @@ import {
   RegisterReqBody,
   ResetPasswordBody,
   TokenPayload,
+  UpdateMeRequestBody,
   VerifyForgotPasswordTokenBody
 } from '~/models/requests/User.requests'
 import User from '~/models/schemas/User.schema'
@@ -133,17 +134,16 @@ export const getMeController = async (req: Request, res: Response, next: NextFun
     result: user
   })
 }
-export const updateMe = async (req: Request, res: Response, next: NextFunction) => {
-  // const { user_id } = req.decode_authorization as TokenPayload
-  // const user = await userService.updateMe(user_id, req.body)
-  // if (!user) {
-  //   return res.status(httpStatus.NOT_FOUND).json({
-  //     message: userMessages.USER_NOT_FOUND
-  //   })
-  // }
-  // return res.json({
-  //   message: userMessages.UPDATE_ME_SUCCESSFULLY,
-  //   result: user
-  // })
-  return res.json({ message: 'Update me' })
+export const updateMeController = async (
+  req: Request<ParamsDictionary, any, UpdateMeRequestBody>,
+  res: Response,
+  next: NextFunction
+) => {
+  const { user_id } = req.decode_authorization as TokenPayload
+  const { body } = req
+  const user = await userService.updateMe(user_id, body)
+  return res.json({
+    message: userMessages.UPDATE_ME_SUCCESSFULLY,
+    result: user
+  })
 }
