@@ -1,10 +1,12 @@
-import { Request } from 'express'
+import { NextFunction, Request, RequestHandler } from 'express'
 import { ParamSchema, check, checkSchema } from 'express-validator'
 import { JsonWebTokenError } from 'jsonwebtoken'
 import { capitalize } from 'lodash'
+import { UserVerifyStatus } from '~/constants/enums'
 import httpStatus from '~/constants/httpStatus'
 import { userMessages } from '~/constants/messages'
 import { ErrorWithStatus } from '~/models/Error'
+import { TokenPayload } from '~/models/requests/User.requests'
 import databaseService from '~/services/database.services'
 import userService from '~/services/users.services'
 import { hashPassword } from '~/utils/crypto'
@@ -335,3 +337,16 @@ export const resetPasswordValidator = validate(
     ['body']
   )
 )
+
+export const verifiedUserValidator: RequestHandler = (req: Request, res, next) => {
+  const { verify } = req.decode_authorization as TokenPayload
+  if (verify !== UserVerifyStatus.Verified) {
+    return next(
+      new ErrorWithStatus({
+        message: userMessages.USER_NOT_VERIFIED,
+        status: httpStatus.FORBIDDEN
+      })
+    )
+  }
+  next()
+}
