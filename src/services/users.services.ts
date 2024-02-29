@@ -229,7 +229,8 @@ class UserService {
         }
       },
       {
-        returnDocument: 'after',
+        returnDocument: 'after', // nếu không có dòng này, sau khi update xong trả về cái cũ
+        // có 1 số trường không muốn trả về, ta khai báo trong projection
         projection: {
           password: 0,
           forgot_password_token: 0,

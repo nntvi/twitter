@@ -24,6 +24,8 @@ import {
   getMeController,
   updateMeController
 } from '~/controllers/user.controller'
+import { filterMiddlewares } from '~/middlewares/common.middlewares'
+import { UpdateMeRequestBody } from '~/models/requests/User.requests'
 const usersRouter = Router()
 
 usersRouter.post('/login', loginValidator, loginController)
@@ -100,6 +102,16 @@ usersRouter.patch(
   accessTokenValidator,
   verifiedUserValidator,
   updateMeValidator,
+  filterMiddlewares<UpdateMeRequestBody>([
+    'name',
+    'date_of_birth',
+    'bio',
+    'location',
+    'website',
+    'username',
+    'avatar',
+    'cover_photo'
+  ]),
   wrapRequestHandler(updateMeController)
 )
 
