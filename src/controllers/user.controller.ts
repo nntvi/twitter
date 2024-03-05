@@ -7,6 +7,7 @@ import { userMessages } from '~/constants/messages'
 import {
   EmailVerifyTokenBody,
   ForgotPasswordTokenBody,
+  GetProfileReqParams,
   LoginReqBody,
   LogoutBody,
   RegisterReqBody,
@@ -145,6 +146,20 @@ export const updateMeController = async (
   const user = await userService.updateMe(user_id, body)
   return res.json({
     message: userMessages.UPDATE_ME_SUCCESSFULLY,
+    result: user
+  })
+}
+
+export const getProfileController = async (req: Request<GetProfileReqParams>, res: Response, next: NextFunction) => {
+  const { username } = req.params
+  const user = await userService.getProfile(username)
+  if (!user) {
+    return res.status(httpStatus.NOT_FOUND).json({
+      message: userMessages.USER_NOT_FOUND
+    })
+  }
+  return res.json({
+    message: userMessages.GET_PROFILE_SUCCESSFULLY,
     result: user
   })
 }

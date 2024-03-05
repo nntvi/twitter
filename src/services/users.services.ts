@@ -69,6 +69,22 @@ class UserService {
     const result = await databaseService.users.findOne({ email: email })
     return result
   }
+  getProfile = async (username: string) => {
+    const result = await databaseService.users.findOne(
+      { username },
+      {
+        projection: {
+          password: 0,
+          forgot_password_token: 0,
+          email_verified_token: 0,
+          verify: 0,
+          created_at: 0,
+          updated_at: 0
+        }
+      }
+    )
+    return result
+  }
   async checkEmailExist(email: string) {
     const result = await databaseService.users.findOne({ email })
     return Boolean(result)
@@ -88,6 +104,7 @@ class UserService {
       new User({
         ...payload,
         _id: user_id,
+        username: `user_${user_id.toString()}`,
         email_verified_token,
         date_of_birth: new Date(payload.date_of_birth),
         password: hashPassword(payload.password)
