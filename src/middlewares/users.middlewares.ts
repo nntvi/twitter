@@ -2,6 +2,7 @@ import { NextFunction, Request, RequestHandler } from 'express'
 import { ParamSchema, check, checkSchema } from 'express-validator'
 import { JsonWebTokenError } from 'jsonwebtoken'
 import { capitalize } from 'lodash'
+import { ObjectId } from 'mongodb'
 import { UserVerifyStatus } from '~/constants/enums'
 import httpStatus from '~/constants/httpStatus'
 import { userMessages } from '~/constants/messages'
@@ -422,6 +423,33 @@ export const updateMeValidator = validate(
       },
       avatar: imageSchema,
       cover_photo: imageSchema
+    },
+    ['body']
+  )
+)
+
+export const followValidator = validate(
+  checkSchema(
+    {
+      followed_user_id: {
+        custom: {
+          options: async (value: string, { req }) => {
+            if (!ObjectId.isValid(value)) {
+              throw new ErrorWithStatus({
+                message: userMessages.INVALID_FOLLOWED_USER_ID,
+                status: httpStatus.NOT_FOUND
+              })
+            }
+            const followed_user = await userService.findUserById(value)
+            if (followed_user === null) {
+              throw new ErrorWithStatus({
+                message: userMessages.USER_NOT_FOUND,
+                status: httpStatus.NOT_FOUND
+              })
+            }
+          }
+        }
+      }
     },
     ['body']
   )

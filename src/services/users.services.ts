@@ -8,6 +8,7 @@ import { ObjectId } from 'mongodb'
 import { config } from 'dotenv'
 import { signToken } from '~/utils/jwt'
 import { userMessages } from '~/constants/messages'
+import Followers from '~/models/schemas/Followers.schema'
 config() // thêm zô, có xài process thì nhớ khai báo này
 // controller gọi đến service
 class UserService {
@@ -65,6 +66,7 @@ class UserService {
     )
     return result
   }
+
   findUserByEmail = async (email: string) => {
     const result = await databaseService.users.findOne({ email: email })
     return result
@@ -256,6 +258,28 @@ class UserService {
       }
     )
     return user
+  }
+
+  async follow(user_id: string, followed_user_id: string) {
+    // nếu đã follow rồi thì thôi, ko insert nữa
+    const follower = await databaseService.followers.findOne({
+      user_id: new ObjectId(user_id),
+      followed_user_id: new ObjectId(followed_user_id)
+    })
+    if (follower === null) {
+      await databaseService.followers.insertOne(
+        new Followers({
+          user_id: new ObjectId(user_id),
+          followed_user_id: new ObjectId(followed_user_id)
+        })
+      )
+      return {
+        message: userMessages.FOLLOW_SUCCESSFULLY
+      }
+    }
+    return {
+      message: userMessages.ALREADY_FOLLOW
+    }
   }
 }
 

@@ -1,6 +1,7 @@
 export const userMessages = {
   VALIDATION_ERROR: 'Validation error',
   USER_NOT_FOUND: 'User not found',
+  INVALID_USER_ID: 'Invalid user ID',
 
   NAME_REQUIRED: 'Name is required',
   NAME_IS_STRING: 'Name must be a string',
@@ -60,5 +61,10 @@ export const userMessages = {
   IMAGE_IS_STRING: 'Image must be a string',
   IMAGE_LENGTH: 'Image must be  from 3 to 200 characters',
 
-  GET_PROFILE_SUCCESSFULLY: 'Get profile successfully'
+  GET_PROFILE_SUCCESSFULLY: 'Get profile successfully',
+
+  FOLLOW_SUCCESSFULLY: 'Follow successfully',
+  FOLLOWED_USER_ID_IS_STRING: 'Followed user id must be a string',
+  INVALID_FOLLOWED_USER_ID: 'Invalid followed user id',
+  ALREADY_FOLLOW: 'Already follow'
 } as const
