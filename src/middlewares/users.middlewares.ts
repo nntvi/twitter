@@ -130,6 +130,26 @@ const imageSchema: ParamSchema = {
     errorMessage: userMessages.IMAGE_LENGTH
   }
 }
+
+const userIdSchema: ParamSchema = {
+  custom: {
+    options: async (value: string, { req }) => {
+      if (!ObjectId.isValid(value)) {
+        throw new ErrorWithStatus({
+          message: userMessages.INVALID_USER_ID,
+          status: httpStatus.NOT_FOUND
+        })
+      }
+      const user = await userService.findUserById(value)
+      if (user === null) {
+        throw new ErrorWithStatus({
+          message: userMessages.USER_NOT_FOUND,
+          status: httpStatus.NOT_FOUND
+        })
+      }
+    }
+  }
+}
 export const loginValidator = validate(
   checkSchema(
     {
@@ -431,26 +451,17 @@ export const updateMeValidator = validate(
 export const followValidator = validate(
   checkSchema(
     {
-      followed_user_id: {
-        custom: {
-          options: async (value: string, { req }) => {
-            if (!ObjectId.isValid(value)) {
-              throw new ErrorWithStatus({
-                message: userMessages.INVALID_FOLLOWED_USER_ID,
-                status: httpStatus.NOT_FOUND
-              })
-            }
-            const followed_user = await userService.findUserById(value)
-            if (followed_user === null) {
-              throw new ErrorWithStatus({
-                message: userMessages.USER_NOT_FOUND,
-                status: httpStatus.NOT_FOUND
-              })
-            }
-          }
-        }
-      }
+      followed_user_id: userIdSchema
     },
     ['body']
+  )
+)
+
+export const unfollowValidator = validate(
+  checkSchema(
+    {
+      user_id: userIdSchema
+    },
+    ['params']
   )
 )
