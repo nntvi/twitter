@@ -27,7 +27,8 @@ export const userMessages = {
   CONFIRM_PASSWORD_MUST_BE_STRONG:
     'Confirm password must be from 6 to 50 characters, at least one uppercase letter, one lowercase letter, one number and one special character',
   CONFIRM_PASSWORD_MUST_MATCH: 'Confirm password must match with password',
-
+  CHANGE_PASSWORD_SUCCESSFULLY: 'Change password successfully',
+  OLD_PASSWORD_INCORRECT: 'Old password is incorrect',
   // --------------------- DATE OF BIRTH ---------------------
   DATE_OF_BIRTH_IS_ISO8601: 'Date of birth must be in ISO 8601 format',
 

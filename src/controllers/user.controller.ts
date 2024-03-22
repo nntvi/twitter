@@ -5,6 +5,7 @@ import { UserVerifyStatus } from '~/constants/enums'
 import httpStatus from '~/constants/httpStatus'
 import { userMessages } from '~/constants/messages'
 import {
+  ChangePasswordReqBody,
   EmailVerifyTokenBody,
   FollowReqBody,
   ForgotPasswordTokenBody,
@@ -180,5 +181,16 @@ export const unfollowController = async (req: Request<UnfollowReqParam>, res: Re
   const { user_id } = req.decode_authorization as TokenPayload
   const { user_id: followed_user_id } = req.params
   const result = await userService.unfollow(user_id, followed_user_id)
+  return res.json(result)
+}
+
+export const changePasswordController = async (
+  req: Request<ParamsDictionary, any, ChangePasswordReqBody>,
+  res: Response,
+  next: NextFunction
+) => {
+  const { user_id } = req.decode_authorization as TokenPayload
+  const { new_password } = req.body
+  const result = await userService.changePassword(user_id, new_password)
   return res.json(result)
 }

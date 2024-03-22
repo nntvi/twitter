@@ -31,7 +31,7 @@ const passwordSchema: ParamSchema = {
     options: { minLength: 6, minLowercase: 1, minUppercase: 1, minNumbers: 1, minSymbols: 1 }
   }
 }
-const confirmPasswordSchema: ParamSchema = {
+const confirmPasswordSchema = (compareField: string): ParamSchema => ({
   notEmpty: {
     errorMessage: userMessages.CONFIRM_PASSWORD_REQUIRED
   },
@@ -44,13 +44,13 @@ const confirmPasswordSchema: ParamSchema = {
   },
   custom: {
     options: (value, { req }) => {
-      if (value !== req.body.password) {
+      if (value !== req.body[compareField]) {
         throw new Error(userMessages.CONFIRM_PASSWORD_MUST_MATCH)
       }
       return true
     }
   }
-}
+})
 const forgotPasswordToken: ParamSchema = {
   trim: true,
   custom: {
@@ -216,7 +216,7 @@ export const registerValidator = validate(
         }
       },
       password: passwordSchema,
-      confirm_password: confirmPasswordSchema,
+      confirm_password: confirmPasswordSchema('password'),
       date_of_birth: dateOfBirthSchema
     },
     ['body']
@@ -369,7 +369,7 @@ export const resetPasswordValidator = validate(
   checkSchema(
     {
       password: passwordSchema,
-      confirm_password: confirmPasswordSchema,
+      confirm_password: confirmPasswordSchema('password'),
       forgot_password_token: forgotPasswordToken
     },
     ['body']
@@ -471,5 +471,38 @@ export const unfollowValidator = validate(
       user_id: userIdSchema
     },
     ['params']
+  )
+)
+
+export const changePasswordValidator = validate(
+  checkSchema(
+    {
+      old_password: {
+        ...passwordSchema,
+        custom: {
+          options: async (value: string, { req }) => {
+            const { user_id } = (req as Request).decode_authorization as TokenPayload
+            const user = await userService.findUserById(user_id)
+            if (!user) {
+              throw new ErrorWithStatus({
+                message: userMessages.USER_NOT_FOUND,
+                status: httpStatus.NOT_FOUND
+              })
+            }
+            const { password } = user
+            const isMatch = hashPassword(value) === password
+            if (!isMatch) {
+              throw new ErrorWithStatus({
+                message: userMessages.OLD_PASSWORD_INCORRECT,
+                status: httpStatus.UNAUTHORIZED
+              })
+            }
+          }
+        }
+      },
+      new_password: passwordSchema,
+      confirm_new_password: confirmPasswordSchema('new_password')
+    },
+    ['body']
   )
 )
