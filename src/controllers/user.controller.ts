@@ -144,7 +144,6 @@ export const updateMeController = async (
 ) => {
   const { user_id } = req.decode_authorization as TokenPayload
   const { body } = req
-  console.log('🚀 ~ body:', body)
   const user = await userService.updateMe(user_id, body)
   return res.json({
     message: userMessages.UPDATE_ME_SUCCESSFULLY,

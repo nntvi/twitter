@@ -71,6 +71,12 @@ class UserService {
     const result = await databaseService.users.findOne({ email: email })
     return result
   }
+
+  findUserByUsername = async (username: string) => {
+    const result = await databaseService.users.findOne({ username: username })
+    return result
+  }
+
   getProfile = async (username: string) => {
     const result = await databaseService.users.findOne(
       { username },
