@@ -1,3 +1,4 @@
+import { config } from 'dotenv'
 import { NextFunction, Request, Response } from 'express'
 import { ParamsDictionary } from 'express-serve-static-core'
 import { ObjectId } from 'mongodb'
@@ -20,9 +21,8 @@ import {
   VerifyForgotPasswordTokenBody
 } from '~/models/requests/User.requests'
 import User from '~/models/schemas/User.schema'
-import databaseService from '~/services/database.services'
 import userService from '~/services/users.services'
-
+config()
 export const loginController = async (req: Request<ParamsDictionary, any, LoginReqBody>, res: Response) => {
   const user = req.user as User
   const user_id = user._id as ObjectId
@@ -31,6 +31,13 @@ export const loginController = async (req: Request<ParamsDictionary, any, LoginR
     message: userMessages.LOGIN_SUCCESS,
     result
   })
+}
+
+export const oauthController = async (req: Request, res: Response) => {
+  const { code } = req.query
+  const result = await userService.oauthLogin(code as string)
+  const urlRedirect = `${process.env.CLIENT_REDIRECT_CALLBACK}?access_token=${result.accessToken}&refresh_token=${result.refreshToken}&new_user=${result.new_user}`
+  return res.redirect(urlRedirect)
 }
 
 export const registerController = async (

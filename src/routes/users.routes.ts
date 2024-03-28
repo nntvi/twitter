@@ -29,13 +29,18 @@ import {
   getProfileController,
   followController,
   unfollowController,
-  changePasswordController
+  changePasswordController,
+  oauthController
 } from '~/controllers/user.controller'
 import { filterMiddlewares } from '~/middlewares/common.middlewares'
 import { UpdateMeRequestBody } from '~/models/requests/User.requests'
 const usersRouter = Router()
 
+/* Login */
 usersRouter.post('/login', loginValidator, loginController)
+
+/* Login OAuth */
+usersRouter.get('/oauth/google', oauthController)
 /**
  * Description: Register a user
  * Path: /register
@@ -172,4 +177,5 @@ usersRouter.put(
   changePasswordValidator,
   wrapRequestHandler(changePasswordController)
 )
+
 export default usersRouter

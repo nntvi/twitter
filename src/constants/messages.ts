@@ -15,6 +15,7 @@ export const userMessages = {
   EMAIL_REQUIRED: 'Email is required',
   EMAIL_INVALID: 'Email is not valid',
   EMAIL_OR_PASSWORD_INCORRECT: 'Email or password is incorrect',
+  EMAIL_NOT_VERIFIED: 'Email is not verified',
 
   // --------------------- PASSWORD ---------------------
   PASSWORD_REQUIRED: 'Password is required',
