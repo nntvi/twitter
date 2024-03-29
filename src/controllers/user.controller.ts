@@ -36,7 +36,9 @@ export const loginController = async (req: Request<ParamsDictionary, any, LoginR
 export const oauthController = async (req: Request, res: Response) => {
   const { code } = req.query
   const result = await userService.oauthLogin(code as string)
-  const urlRedirect = `${process.env.CLIENT_REDIRECT_CALLBACK}?access_token=${result.accessToken}&refresh_token=${result.refreshToken}&new_user=${result.new_user}&verify=${result.verify}`
+  const urlRedirect = `${process.env.CLIENT_REDIRECT_CALLBACK}
+                        ?access_token=${result.accessToken}&refresh_token=${result.refreshToken}
+                        &new_user=${result.new_user}&verify=${result.verify}`
   return res.redirect(urlRedirect)
 }
 
