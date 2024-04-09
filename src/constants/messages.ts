@@ -83,3 +83,7 @@ export const userMessages = {
   UNFOLLOW_SUCCESSFULLY: 'Unfollow successfully',
   ALREADY_UNFOLLOW: 'Already unfollow'
 } as const
+
+export const mediaMessages = {
+  UPLOAD_SUCCESSFULLY: 'Upload image successfully'
+}

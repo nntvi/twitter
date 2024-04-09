@@ -5,6 +5,7 @@ import { defaultErrorHandler } from './middlewares/error.middlewares'
 import mediasRouter from './routes/medias.routes'
 import { initFolder } from './utils/file'
 import { config } from 'dotenv'
+import { UPLOAD_DIR } from './constants/dir'
 config()
 
 databaseService.connect() // sử dụng với class
@@ -16,6 +17,7 @@ initFolder()
 app.use(express.json()) // parse request body ra gửi lên nó mới hỉu => này là "App handler" nè
 app.use('/users', usersRouter) // đi vào route => "Route handler" nè
 app.use('/medias', mediasRouter)
+app.use('/static', express.static(UPLOAD_DIR))
 app.use(defaultErrorHandler)
 
 app.listen(port, () => {

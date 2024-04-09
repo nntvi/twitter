@@ -16,8 +16,8 @@ class MediaService {
     await sharp(file.filepath).jpeg({ quality: 70 }).toFile(newPath)
     fs.unlinkSync(file.filepath)
     return isProduction
-      ? `${process.env.HOST}/uploads/${newName}.jpg`
-      : `http://localhost:${process.env.PORT}/uploads/${newName}.jpg`
+      ? `${process.env.HOST}/static/${newName}.jpg`
+      : `http://localhost:${process.env.PORT}/static/${newName}.jpg`
   }
 }
 const mediasService = new MediaService()
