@@ -4,9 +4,12 @@ import databaseService from './services/database.services'
 import { defaultErrorHandler } from './middlewares/error.middlewares'
 import mediasRouter from './routes/medias.routes'
 import { initFolder } from './utils/file'
+import { config } from 'dotenv'
+config()
+
 databaseService.connect() // sử dụng với class
 const app = express()
-const port = 3000
+const port = process.env.PORT || 3000
 
 // tạo folder upload
 initFolder()
