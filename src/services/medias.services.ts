@@ -20,6 +20,7 @@ class MediaService {
         console.log('🚀 ~ MediaService ~ handleUploadSingleImage ~ newPath:', newPath)
         await sharp(file.filepath).jpeg({ quality: 70 }).toFile(newPath)
         fs.unlinkSync(file.filepath)
+
         return {
           url: isProduction
             ? `${process.env.HOST}/static/image/${newName}.jpg`
