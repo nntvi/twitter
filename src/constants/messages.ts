@@ -43,7 +43,7 @@ export const userMessages = {
   REFRESH_TOKEN_INVALID: 'Refresh token is invalid',
   REFRESH_TOKEN_NOT_FOUND_OR_USED: 'Refresh token not found or used',
   LOGOUT_SUCCESSFULLY: 'Logout successfully',
-
+  REFRESH_TOKEN_SUCCESSFULLY: 'Refresh token successfully',
   // --------------------- EMAIL VERIFICATION ---------------------
   EMAIL_VERIFY_REQUIRED: 'Email verify token is required',
   EMAIL_VERIFY_INVALID: 'Email verify token is invalid',

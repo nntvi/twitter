@@ -275,6 +275,7 @@ export const refreshTokenValidator = validate(
                 verifyToken({ token: value, secretOnPublicKey: process.env.JWT_SECRET_REFRESH_TOKEN as string }),
                 userService.checkRefreshTokenExist(value)
               ])
+              console.log('🚀 ~ options: ~ decode_refresh_token:', decode_refresh_token)
               if (!exist_refresh_token) {
                 throw new ErrorWithStatus({
                   message: userMessages.REFRESH_TOKEN_NOT_FOUND_OR_USED,

@@ -223,6 +223,26 @@ class UserService {
     }
   }
 
+  async refreshToken({
+    user_id,
+    verify,
+    refresh_token
+  }: {
+    user_id: string
+    verify: UserVerifyStatus
+    refresh_token: string
+  }) {
+    const [new_access_token, new_refresh_token] = await Promise.all([
+      this.signAccessToken({ user_id, verify }),
+      this.signRefreshToken({ user_id, verify }),
+      databaseService.refreshTokens.deleteOne({ token: refresh_token })
+    ])
+    databaseService.refreshTokens.insertOne(
+      new RefreshToken({ token: new_refresh_token, user_id: new ObjectId(user_id) })
+    )
+    return { new_access_token, new_refresh_token }
+  }
+
   async verifyEmail(user_id: string) {
     // Tạo giá trị cập nhật => new Date()
     // Cập nhật giá trị => làm kiểu $currentDate -> mongoDB đưa ngày vào,

@@ -50,7 +50,7 @@ export const serverVideoStreamController = (req: Request, res: Response) => {
   // Dung lượng thực tế cho mỗi đoạn video stream
   // thường đây sẽ là chunkSize, ngoại trừ đoạn cuối cùng
   const contentLength = end - start + 1
-  const contentType = mime.getType(videoPath) || 'video/*'
+  const contentType = mime.lookup(videoPath) || 'video/*'
   const headers = {
     'Content-Range': `bytes ${start}-${end}/${videoSize}`,
     'Accept-Ranges': 'bytes',
