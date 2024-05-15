@@ -47,7 +47,9 @@
     "mime": "^4.0.2",
     "minimist": "^1.2.8",
     "mongodb": "^6.1.0",
+    "nanoid": "^5.0.7",
     "sharp": "^0.33.3",
-    "typescript": "^5.4.3"
+    "typescript": "^5.4.3",
+    "zx": "^8.0.2"
   }
 }

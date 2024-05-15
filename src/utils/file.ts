@@ -38,11 +38,16 @@ export const handleUploadImg = async (req: any) => {
     })
   })
 }
+
+// Cách 1: Tạo unique id cho video ngay từ đầu => nên làm cách này
+// Cách 2: Đợi video upload xong rồi tạo folder, move video vào
 export const uploadVideo = async (req: any) => {
-  const formidable = (await import('formidable')).default
-  // Cho upload 1 video thôi
+  const formidable = (await import('formidable')).default // tạo form
+  const nanoId = (await import('nanoid')).nanoid // tạo id
+  const idName = nanoId()
+  fs.mkdirSync(path.resolve(UPLOAD_VIDEO_DIR, idName), { recursive: true }) // tạo folder có tên theo id vừa tạo
   const form = formidable({
-    uploadDir: UPLOAD_VIDEO_DIR,
+    uploadDir: path.resolve(UPLOAD_VIDEO_DIR, idName),
     maxFiles: 1,
     // keepExtensions: true, // để thấy được đuôi file
     maxFileSize: 50 * 1024 * 1024, // 50MB
@@ -53,6 +58,9 @@ export const uploadVideo = async (req: any) => {
         form.emit('error' as any, new Error('Invalid file type') as any)
       }
       return valid
+    },
+    filename: function (name, ext, part, form) {
+      return idName + ext
     }
   })
   return new Promise<File[]>((resolve, reject) => {
@@ -68,6 +76,7 @@ export const uploadVideo = async (req: any) => {
         const ext = getExtension(video.originalFilename as string)
         fs.renameSync(video.filepath, video.filepath + '.' + ext)
         video.newFilename = video.newFilename + '.' + ext
+        video.filepath = video.filepath + '.' + ext
       })
 
       resolve(files.video as File[])

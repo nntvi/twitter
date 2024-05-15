@@ -20,6 +20,14 @@ export const uploadVideoController = async (req: Request, res: Response) => {
     result: url
   })
 }
+
+export const uploadVideoHLSController = async (req: Request, res: Response) => {
+  const url = await mediasService.handleUploadVideoHLS(req)
+  return res.json({
+    message: mediaMessages.UPLOAD_SUCCESSFULLY,
+    result: url
+  })
+}
 // cho phép custom sâu hơn
 export const serverImageController = (req: Request, res: Response) => {
   const { name } = req.params
