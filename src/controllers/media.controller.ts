@@ -70,6 +70,23 @@ export const serverVideoStreamController = (req: Request, res: Response) => {
   videoStream.pipe(res)
 }
 
+export const serveM3u8Controller = (req: Request, res: Response) => {
+  const { id } = req.params
+  return res.sendFile(path.resolve(UPLOAD_VIDEO_DIR, id, 'master.m3u8'), (err) => {
+    if (err) {
+      res.status((err as any).status).send('Not found')
+    }
+  })
+}
+export const serveSegmentController = (req: Request, res: Response) => {
+  const { id, v, segment } = req.params
+  // segment có dạng: 0.ts, 1.ts, 2.ts
+  return res.sendFile(path.resolve(UPLOAD_VIDEO_DIR, id, v, segment), (err) => {
+    if (err) {
+      res.status((err as any).status).send('Not found')
+    }
+  })
+}
 /**
  * Format của header Content-range: bytes <start>-<end>/<videoSize>
  * Ví dụ: Content-range: bytes 1084567-3145727/3145728

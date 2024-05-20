@@ -13,6 +13,43 @@ import { encodeHLSWithMultipleVideoStreams } from '~/utils/video'
 import fsPromise from 'fs/promises'
 
 config()
+class Queue {
+  items: string[]
+  encoding: boolean
+
+  constructor() {
+    this.items = []
+    this.encoding = false
+  }
+
+  enqueue(item: string) {
+    this.items.push(item)
+    this.processEncode()
+  }
+  async processEncode() {
+    // nếu đang encode thì ko xử lý
+    if (this.encoding) return
+    if (this.items.length > 0) {
+      this.encoding = true
+      const videoPath = this.items[0]
+      try {
+        await encodeHLSWithMultipleVideoStreams(videoPath)
+        this.items.shift()
+        await fsPromise.unlink(videoPath)
+        console.log('🚀 ~ Queue ~ processEncode ~ videoPath done')
+      } catch (error) {
+        console.log('🚀 ~ Queue ~ processEncode ~ error:', error)
+      }
+      this.encoding = false
+      this.processEncode()
+    } else {
+      console.log('🚀 Encode video queue is empty')
+    }
+  }
+}
+
+const queue = new Queue()
+
 class MediaService {
   async handleUploadImage(req: Request) {
     const files = await handleUploadImg(req)
@@ -20,7 +57,6 @@ class MediaService {
       files.map(async (file) => {
         const newName = getNameFromFullName(file.newFilename)
         const newPath = path.resolve(UPLOAD_IMAGE_DIR, `${newName}.jpg`)
-        console.log('🚀 ~ MediaService ~ handleUploadSingleImage ~ newPath:', newPath)
         await sharp(file.filepath).jpeg({ quality: 70 }).toFile(newPath)
         fs.unlinkSync(file.filepath)
 
@@ -51,12 +87,11 @@ class MediaService {
     const files = await uploadVideo(req)
     const result: Media[] = await Promise.all(
       files.map(async (file) => {
-        await encodeHLSWithMultipleVideoStreams(file.filepath)
         const newName = getNameFromFullName(file.newFilename)
-        await fsPromise.unlink(file.filepath)
+        queue.enqueue(file.filepath)
         return {
           url: isProduction
-            ? `${process.env.HOST}/static/video-hls/${newName}`
+            ? `${process.env.HOST}/static/video-hls/${newName}.m3u8`
             : `http://localhost:${process.env.PORT}/static/video-hls/${newName}`,
           type: MediaType.HLS
         }

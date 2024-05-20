@@ -41,6 +41,12 @@ export const handleUploadImg = async (req: any) => {
 
 // Cách 1: Tạo unique id cho video ngay từ đầu => nên làm cách này
 // Cách 2: Đợi video upload xong rồi tạo folder, move video vào
+
+/* Cách xử lý khi upload video và encode
+ * Có 2 giai đoạn
+ * Upload video: Upload video thành công thì resolve về cho người dùng
+ * Encode video: Khai báo thêm 1 url endpoint để check xem video đó đã encode xong chưa
+ */
 export const uploadVideo = async (req: any) => {
   const formidable = (await import('formidable')).default // tạo form
   const nanoId = (await import('nanoid')).nanoid // tạo id
