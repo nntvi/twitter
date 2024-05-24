@@ -85,5 +85,6 @@ export const userMessages = {
 } as const
 
 export const mediaMessages = {
-  UPLOAD_SUCCESSFULLY: 'Upload file successfully'
+  UPLOAD_SUCCESSFULLY: 'Upload file successfully',
+  GET_VIDEO_STATUS_SUCCESSFULLY: 'Get video status successfully'
 }

@@ -12,4 +12,5 @@ staticRouter.get('/image/:name', serverImageController)
 staticRouter.get('/video-stream/:name', serverVideoStreamController)
 staticRouter.get('/video-hls/:id', serveM3u8Controller)
 staticRouter.get('/video-hls/:id/:v/:segment', serveSegmentController)
+
 export default staticRouter
