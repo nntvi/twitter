@@ -64,7 +64,7 @@ const forgotPasswordToken: ParamSchema = {
       try {
         const decoded_forgot_password_token = await verifyToken({
           token: value,
-          secretOnPublicKey: process.env.JWT_SECRET_FORGOT_PASSWORD_TOKEN as string
+          secretOrPublicKey: process.env.JWT_SECRET_FORGOT_PASSWORD_TOKEN as string
         })
         const { user_id } = decoded_forgot_password_token
         const user = await userService.findUserById(user_id)
@@ -239,7 +239,7 @@ export const accessTokenValidator = validate(
             try {
               const decode_authorization = await verifyToken({
                 token: accessToken,
-                secretOnPublicKey: process.env.JWT_SECRET_ACCESS_TOKEN as string
+                secretOrPublicKey: process.env.JWT_SECRET_ACCESS_TOKEN as string
               })
               ;(req as Request).decode_authorization = decode_authorization
               return true
@@ -272,7 +272,7 @@ export const refreshTokenValidator = validate(
             }
             try {
               const [decode_refresh_token, exist_refresh_token] = await Promise.all([
-                verifyToken({ token: value, secretOnPublicKey: process.env.JWT_SECRET_REFRESH_TOKEN as string }),
+                verifyToken({ token: value, secretOrPublicKey: process.env.JWT_SECRET_REFRESH_TOKEN as string }),
                 userService.checkRefreshTokenExist(value)
               ])
               console.log('🚀 ~ options: ~ decode_refresh_token:', decode_refresh_token)
@@ -316,7 +316,7 @@ export const emailVerifyTokenValidator = validate(
             try {
               const decode_email_verify_token = await verifyToken({
                 token: value,
-                secretOnPublicKey: process.env.JWT_SECRET_EMAIL_VERIFY_TOKEN as string
+                secretOrPublicKey: process.env.JWT_SECRET_EMAIL_VERIFY_TOKEN as string
               })
               ;(req as Request).decode_email_verify_token = decode_email_verify_token
             } catch (error) {

@@ -23,10 +23,10 @@ export const signToken = ({
   })
 }
 
-export const verifyToken = ({ token, secretOnPublicKey }: { token: string; secretOnPublicKey: string }) => {
+export const verifyToken = ({ token, secretOrPublicKey }: { token: string; secretOrPublicKey: string }) => {
   // vì token của mình luôn luôn là obj payload nên sử dụng kiểu jwt.JwtPayload
   return new Promise<TokenPayload>((resolve, reject) => {
-    jwt.verify(token, secretOnPublicKey, (err, decoded) => {
+    jwt.verify(token, secretOrPublicKey, (err, decoded) => {
       if (err) {
         throw reject(err)
       }
