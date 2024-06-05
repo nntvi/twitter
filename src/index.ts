@@ -10,7 +10,12 @@ import staticRouter from './routes/static.routes'
 import cors from 'cors'
 config()
 
-databaseService.connect().then(() => databaseService.indexUsers()) // sử dụng với class
+databaseService.connect().then(() => {
+  databaseService.indexUsers()
+  databaseService.indexRefreshToken()
+  databaseService.indexVideoStatus()
+  databaseService.indexFollowers()
+}) // sử dụng với class
 const app = express()
 app.use(cors())
 const port = process.env.PORT || 3000

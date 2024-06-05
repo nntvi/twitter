@@ -26,10 +26,35 @@ class DatabaseService {
     }
   }
 
-  indexUsers() {
-    this.users.createIndex({ email: 1 }, { unique: true })
-    this.users.createIndex({ username: 1 }, { unique: true })
-    this.users.createIndex({ email: 1, password: 1 })
+  async indexUsers() {
+    const exist = await this.users.indexExists(['email_1', 'username_1', 'email_1_password_1'])
+    if (!exist) {
+      this.users.createIndex({ email: 1 }, { unique: true })
+      this.users.createIndex({ username: 1 }, { unique: true })
+      this.users.createIndex({ email: 1, password: 1 })
+    }
+  }
+
+  async indexRefreshToken() {
+    const exist = await this.refreshTokens.indexExists(['token_1', 'exp_1'])
+    if (!exist) {
+      this.refreshTokens.createIndex({ token: 1 })
+      this.refreshTokens.createIndex({ exp: 1 }, { expireAfterSeconds: 0 })
+    }
+  }
+
+  async indexVideoStatus() {
+    const exist = await this.videoStatus.indexExists(['name_1'])
+    if (!exist) {
+      this.videoStatus.createIndex({ name: 1 })
+    }
+  }
+
+  async indexFollowers() {
+    const exist = await this.followers.indexExists(['user_id_1_followed_user_id_1'])
+    if (!exist) {
+      this.followers.createIndex({ user_id: 1, followed_user_id: 1 })
+    }
   }
   // tạo getter lấy collection users từ db
   get users(): Collection<User> {
