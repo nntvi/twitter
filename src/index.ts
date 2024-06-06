@@ -8,6 +8,7 @@ import { config } from 'dotenv'
 import { UPLOAD_IMAGE_DIR, UPLOAD_VIDEO_DIR } from './constants/dir'
 import staticRouter from './routes/static.routes'
 import cors from 'cors'
+import tweetsRouter from '~/routes/tweets.routes'
 config()
 
 databaseService.connect().then(() => {
@@ -25,6 +26,7 @@ initFolder()
 app.use(express.json()) // parse request body ra gửi lên nó mới hỉu => này là "App handler" nè
 app.use('/users', usersRouter) // đi vào route => "Route handler" nè
 app.use('/medias', mediasRouter)
+app.use('/tweets', tweetsRouter)
 app.use('/static', staticRouter)
 app.use('/static/video', express.static(UPLOAD_VIDEO_DIR))
 

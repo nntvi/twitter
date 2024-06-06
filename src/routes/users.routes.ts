@@ -38,6 +38,12 @@ import { UpdateMeRequestBody } from '~/models/requests/User.requests'
 const usersRouter = Router()
 
 /* Login */
+/**
+ * Description: Login a user
+ * Path: /login
+ * Method: POST
+ * Body: { email: string, password: string}
+ */
 usersRouter.post('/login', loginValidator, loginController)
 
 /* Login OAuth */
