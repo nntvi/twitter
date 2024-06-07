@@ -88,3 +88,13 @@ export const mediaMessages = {
   UPLOAD_SUCCESSFULLY: 'Upload file successfully',
   GET_VIDEO_STATUS_SUCCESSFULLY: 'Get video status successfully'
 }
+
+export const tweetMessages = {
+  TWEET_TYPE_INVALID: 'Tweet type invalid',
+  TWEET_AUDIENCE_INVALID: 'Tweet audience invalid',
+  TWEET_PARENT_ID_INVALID: 'Tweet parent id invalid',
+  TWEET_CONTENT_INVALID: 'Tweet content invalid',
+  HASHTAGS_MUST_BE_AN_ARRAY_OF_STRING: 'Hashtags must be an array of string',
+  MENTIONS_MUST_BE_AN_ARRAY_OF_USER_ID: 'Mentions must be an array of user id',
+  MEDIA_MUST_BE_AN_ARRAY_OF_MEDIA_OBJECT: 'Media must be an array of media object'
+}
