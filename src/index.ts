@@ -9,6 +9,7 @@ import { UPLOAD_IMAGE_DIR, UPLOAD_VIDEO_DIR } from './constants/dir'
 import staticRouter from './routes/static.routes'
 import cors from 'cors'
 import tweetsRouter from '~/routes/tweets.routes'
+import bookmarksRouter from '~/routes/bookmarks.routes'
 config()
 
 databaseService.connect().then(() => {
@@ -16,6 +17,7 @@ databaseService.connect().then(() => {
   databaseService.indexRefreshToken()
   databaseService.indexVideoStatus()
   databaseService.indexFollowers()
+  databaseService.indexBookmarks()
 }) // sử dụng với class
 const app = express()
 app.use(cors())
@@ -27,6 +29,7 @@ app.use(express.json()) // parse request body ra gửi lên nó mới hỉu => n
 app.use('/users', usersRouter) // đi vào route => "Route handler" nè
 app.use('/medias', mediasRouter)
 app.use('/tweets', tweetsRouter)
+app.use('/bookmarks', bookmarksRouter)
 app.use('/static', staticRouter)
 app.use('/static/video', express.static(UPLOAD_VIDEO_DIR))
 

@@ -6,6 +6,7 @@ import Followers from '~/models/schemas/Followers.schema'
 import VideoStatus from '~/models/schemas/VideoStatus.schema'
 import Tweet from '~/models/schemas/Tweet.schema'
 import Hashtag from '~/models/schemas/Hashtags.schema'
+import Bookmark from '~/models/schemas/Bookmarks.schema'
 config()
 const uri = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@startwithmongodb.p65hxjm.mongodb.net/?retryWrites=true&w=majority`
 
@@ -58,6 +59,15 @@ class DatabaseService {
       this.followers.createIndex({ user_id: 1, followed_user_id: 1 })
     }
   }
+
+  async indexBookmarks() {
+    const exist = await this.bookmarks.indexExists(['user_id_1_tweet_id_1'])
+    if (!exist) {
+      this.bookmarks.createIndex({ user_id: 1 })
+      this.bookmarks.createIndex({ tweet_id: 1 })
+      this.bookmarks.createIndex({ user_id: 1, tweet_id: 1 })
+    }
+  }
   // tạo getter lấy collection users từ db
   get users(): Collection<User> {
     return this.db.collection(process.env.DB_USERS_COLLECTION as string)
@@ -79,6 +89,9 @@ class DatabaseService {
   }
   get hashtags(): Collection<Hashtag> {
     return this.db.collection(process.env.DB_HASHTAGS_COLLECTION as string)
+  }
+  get bookmarks(): Collection<Bookmark> {
+    return this.db.collection(process.env.DB_BOOKMARKS_COLLECTION as string)
   }
 }
 // Tạo 1 object từ class DatabaseService
