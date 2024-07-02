@@ -3,6 +3,7 @@ import { isEmpty } from 'lodash'
 import { ObjectId } from 'mongodb'
 import { MediaType, TweetAudience, TweetType } from '~/constants/enums'
 import { tweetMessages } from '~/constants/messages'
+import tweetServices from '~/services/tweets.services'
 import { numberEnumToArray } from '~/utils/commons'
 import { validate } from '~/utils/validation'
 
@@ -110,4 +111,26 @@ export const createTweetValidator = validate(
       }
     }
   })
+)
+export const tweetValidator = validate(
+  checkSchema(
+    {
+      tweet_id: {
+        notEmpty: true,
+        isMongoId: {
+          errorMessage: tweetMessages.TWEET_ID_INVALID
+        },
+        custom: {
+          options: async (value, { req }) => {
+            const tweet = await tweetServices.findTweetById(value)
+            if (!tweet) {
+              throw new Error(tweetMessages.TWEET_NOT_FOUND)
+            }
+            return true
+          }
+        }
+      }
+    },
+    ['params', 'body']
+  )
 )

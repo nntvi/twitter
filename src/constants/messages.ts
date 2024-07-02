@@ -97,10 +97,18 @@ export const tweetMessages = {
   HASHTAGS_MUST_BE_AN_ARRAY_OF_STRING: 'Hashtags must be an array of string',
   MENTIONS_MUST_BE_AN_ARRAY_OF_USER_ID: 'Mentions must be an array of user id',
   MEDIA_MUST_BE_AN_ARRAY_OF_MEDIA_OBJECT: 'Media must be an array of media object',
-  CREATE_TWEET_SUCCESS: 'Create tweet successfully'
+  CREATE_TWEET_SUCCESS: 'Create tweet successfully',
+  TWEET_ID_INVALID: 'Tweet id invalid',
+  TWEET_NOT_FOUND: 'Tweet not found'
 }
 
 export const bookmarkMessages = {
   CREATE_BOOKMARK_SUCCESSFULLY: 'Create bookmark successfully',
-  DELETE_BOOKMARK_SUCCESSFULLY: 'Delete bookmark successfully'
+  DELETE_BOOKMARK_SUCCESSFULLY: 'Delete bookmark successfully',
+  UNBOOKMARK_SUCCESSFULLY: 'Unbookmark successfully'
+}
+export const likeMessages = {
+  CREATE_LIKE_SUCCESSFULLY: 'Create like successfully',
+  DELETE_LIKE_SUCCESSFULLY: 'Delete like successfully',
+  UNLIKE_SUCCESSFULLY: 'Unlike successfully'
 }
