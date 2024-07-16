@@ -12,7 +12,7 @@ interface UserType {
   email_verified_token?: string
   forgot_password_token?: string
   verify?: UserVerifyStatus
-
+  twitter_circle?: ObjectId[]
   bio?: string
   location?: string
   website?: string
@@ -31,6 +31,7 @@ class User {
   email_verified_token: string
   forgot_password_token: string
   verify: UserVerifyStatus
+  twitter_circle: ObjectId[]
 
   bio: string
   location: string
@@ -51,6 +52,7 @@ class User {
     this.email_verified_token = user.email_verified_token || ''
     this.forgot_password_token = user.forgot_password_token || ''
     this.verify = user.verify || UserVerifyStatus.Unverified
+    this.twitter_circle = user.twitter_circle || []
     this.bio = user.bio || ''
     this.location = user.location || ''
     this.website = user.website || ''

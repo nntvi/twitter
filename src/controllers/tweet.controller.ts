@@ -16,6 +16,15 @@ export const createTweetController = async (req: Request<ParamsDictionary, any, 
     result
   })
 }
+
+export const getTweetController = async (req: Request<ParamsDictionary, any, TweetRequestBody>, res: Response) => {
+  const tweet_id = req.params.tweet_id
+  const result = await tweetServices.findTweetById(tweet_id)
+  return res.json({
+    message: tweetMessages.GET_TWEET_SUCCESS,
+    result
+  })
+}
 // export const unlikeTweetController = async (req: Request<ParamsDictionary, any, TweetRequestBody>, res: Response) => {
 //   const tweet_id = req.params.tweet_id
 //     const { user_id } = req.decode_authorization as TokenPayload
