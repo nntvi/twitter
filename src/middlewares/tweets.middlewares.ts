@@ -1,12 +1,17 @@
+import { NextFunction, Request, Response } from 'express'
 import { checkSchema } from 'express-validator'
 import { isEmpty } from 'lodash'
 import { ObjectId } from 'mongodb'
-import { MediaType, TweetAudience, TweetType } from '~/constants/enums'
+import { MediaType, TweetAudience, TweetType, UserVerifyStatus } from '~/constants/enums'
 import httpStatus from '~/constants/httpStatus'
-import { tweetMessages } from '~/constants/messages'
+import { tweetMessages, userMessages } from '~/constants/messages'
 import { ErrorWithStatus } from '~/models/Error'
+import { TokenPayload } from '~/models/requests/User.requests'
+import Tweet from '~/models/schemas/Tweet.schema'
 import tweetServices from '~/services/tweets.services'
+import userService from '~/services/users.services'
 import { numberEnumToArray } from '~/utils/commons'
+import { wrapRequestHandler } from '~/utils/handlers'
 import { validate } from '~/utils/validation'
 
 const tweetTypes = numberEnumToArray(TweetType)
@@ -128,6 +133,7 @@ export const tweetValidator = validate(
             if (!tweet) {
               throw new ErrorWithStatus({ message: tweetMessages.TWEET_NOT_FOUND, status: httpStatus.NOT_FOUND })
             }
+            ;(req as Request).tweet = tweet
             return true
           }
         }
@@ -136,3 +142,40 @@ export const tweetValidator = validate(
     ['params', 'body']
   )
 )
+// muốn sử dụng ASYNC AWAIT trong HANDLER EXPRESS thì phải có TRY CATCH
+// không thì sử dụng wrapRequestHandler đã viết á
+export const audienceValidator = wrapRequestHandler(async (req: Request, res: Response, next: NextFunction) => {
+  const tweet = req.tweet as Tweet
+  const { user_id } = req.decode_authorization as TokenPayload
+
+  if (tweet.audience === TweetAudience.TwitterCircle) {
+    // kiểm tra người xem tweet này đã login hay chưa
+    if (!req.decode_authorization) {
+      throw new ErrorWithStatus({
+        status: httpStatus.UNAUTHORIZED,
+        message: userMessages.ACCESS_TOKEN_IS_REQUIRED
+      })
+    }
+    // kiểm trả tài khoản TÁC GIẢ có ổn (bị khoá hay xoá)
+    const author = await userService.findUserByObjectId(tweet.user_id)
+    if (!author || author.verify === UserVerifyStatus.Banned) {
+      // không tìm thấy author => bị ban hoặc xoá
+      throw new ErrorWithStatus({
+        status: httpStatus.NOT_FOUND,
+        message: userMessages.USER_NOT_FOUND
+      })
+    }
+    // kiểm tra người xem tweet này có nằm trong tweet circle của tác giả hay không
+    const isInTwitterCircle = author.twitter_circle.some((user_circle_id) => user_circle_id.equals(user_id))
+    // nhiệm vụ của equals là kiểm tra 1 objectId và string id có giống nhau hay không
+
+    // nếu bạn ko phải tác giả và ko nằm trong circle quăng lỗi
+    if (!author._id.equals(user_id) && !isInTwitterCircle) {
+      throw new ErrorWithStatus({
+        status: httpStatus.FORBIDDEN,
+        message: tweetMessages.TWEET_IS_NOT_PUBLIC
+      })
+    }
+  }
+  next()
+})

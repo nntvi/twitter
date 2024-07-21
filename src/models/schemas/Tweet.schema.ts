@@ -50,7 +50,7 @@ export default class Tweet {
   }: TweetConstructor) {
     const date = new Date()
     this._id = _id
-    this.user_id = user_id
+    this.user_id = user_id || new ObjectId()
     this.type = type
     this.audience = audience
     this.content = content

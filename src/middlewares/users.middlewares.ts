@@ -1,4 +1,4 @@
-import { NextFunction, Request, RequestHandler } from 'express'
+import { NextFunction, Request, RequestHandler, Response } from 'express'
 import { ParamSchema, check, checkSchema } from 'express-validator'
 import { JsonWebTokenError } from 'jsonwebtoken'
 import { capitalize } from 'lodash'
@@ -507,3 +507,14 @@ export const changePasswordValidator = validate(
     ['body']
   )
 )
+
+export const isUserLoggedInValidator = (middleware: (req: Request, res: Response, next: NextFunction) => void) => {
+  return (req: Request, res: Response, next: NextFunction) => {
+    // req.header: Không phân biệt hoa thường (authorization || Authorization đều như nhau)
+    // req.headers: express chỉ nhận "authorization", viết hoa ko map được
+    if (req.headers.authorization) {
+      return middleware(req, res, next)
+    }
+    next()
+  }
+}

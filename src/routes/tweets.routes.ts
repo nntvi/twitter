@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import { createTweetController, getTweetController } from '~/controllers/tweet.controller'
-import { createTweetValidator, tweetValidator } from '~/middlewares/tweets.middlewares'
-import { accessTokenValidator, verifiedUserValidator } from '~/middlewares/users.middlewares'
+import { audienceValidator, createTweetValidator, tweetValidator } from '~/middlewares/tweets.middlewares'
+import { accessTokenValidator, isUserLoggedInValidator, verifiedUserValidator } from '~/middlewares/users.middlewares'
 import { wrapRequestHandler } from '~/utils/handlers'
 
 const tweetsRouter = Router()
@@ -25,7 +25,14 @@ tweetsRouter.post(
  * Method: GET
  * Header: { Authorization: Bearer <access_token> }
  */
-tweetsRouter.get('/:tweet_id', tweetValidator, wrapRequestHandler(getTweetController))
+tweetsRouter.get(
+  '/:tweet_id',
+  tweetValidator,
+  isUserLoggedInValidator(accessTokenValidator),
+  isUserLoggedInValidator(verifiedUserValidator),
+  audienceValidator,
+  wrapRequestHandler(getTweetController)
+)
 /**
  * Description: Delete a tweet
  * Path: /tweet/:tweet_id

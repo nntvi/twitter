@@ -5,6 +5,7 @@ export const userMessages = {
   USERNAME_INVALID:
     'Username must be 4-15 characters long and contain only letters, numbers, underscores, not only number',
   USERNAME_EXISTED: 'Username already exists',
+  ACCESS_TOKEN_IS_REQUIRED: 'Access token is required',
   // --------------------- NAME ---------------------
   NAME_REQUIRED: 'Name is required',
   NAME_IS_STRING: 'Name must be a string',
@@ -100,7 +101,8 @@ export const tweetMessages = {
   CREATE_TWEET_SUCCESS: 'Create tweet successfully',
   TWEET_ID_INVALID: 'Tweet id invalid',
   TWEET_NOT_FOUND: 'Tweet not found',
-  GET_TWEET_SUCCESS: 'Get tweet successfully'
+  GET_TWEET_SUCCESS: 'Get tweet successfully',
+  TWEET_IS_NOT_PUBLIC: 'Tweet is not public'
 }
 
 export const bookmarkMessages = {

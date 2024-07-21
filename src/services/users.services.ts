@@ -106,9 +106,23 @@ class UserService {
       secretOrPublicKey: process.env.JWT_SECRET_REFRESH_TOKEN as string
     })
   }
+
   findUserById = async (user_id: string) => {
     const result = await databaseService.users.findOne(
       { _id: new ObjectId(user_id) },
+      {
+        projection: {
+          password: 0,
+          forgot_password_token: 0,
+          email_verified_token: 0
+        }
+      }
+    )
+    return result
+  }
+  findUserByObjectId = async (user_id: ObjectId) => {
+    const result = await databaseService.users.findOne(
+      { _id: user_id },
       {
         projection: {
           password: 0,
